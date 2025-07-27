@@ -14,6 +14,16 @@ if ! command -v unrar &> /dev/null; then
     exit 1
 fi
 
+if ! command -v 7z &> /dev/null; then
+    echo "Error: 'unrar' is not installed. Please install '7z' to use this script."
+    exit 1
+fi
+
+if ! command -v unzip &> /dev/null; then
+    echo "Error: 'unrar' is not installed. Please install 'unzip' to use this script."
+    exit 1
+fi
+
 # Create the output directory if it doesn't exist
 if [ -n "$extract_to_directory" ] && [ ! -d "$extract_to_directory" ]; then
     echo "Output directory $extract_to_directory does not exist. Attempting to create..."
@@ -93,7 +103,7 @@ extract_rars() {
 
 # Function to extract RAR files, considering overwrite flag and handling errors
 extract_zips() {
-    find "$source_directory" -type f \( \( -name "*.zip" -and -not -name "*.part*.rar" \) -or -name "*.part01.rar" -or -name "*.part1.rar" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
+    find "$source_directory" -type f \( \( -name "*.zip" \)\) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
 
@@ -181,7 +191,7 @@ extract_7zips() {
         
         echo # This adds a blank line before each extraction attempt for better readability
         echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
-        output=$(unrar x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
+        output=$(7z x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
         result=$?
         
         if [ $result -eq 0 ]; then
@@ -259,6 +269,7 @@ echo # Adds an extra line before starting the infinite loop
 # Infinite loop to run extraction based on user-defined frequency
 while true; do
     extract_rars
-
+    extract_7zips
+    extract_zips
     sleep "$sleep_time"
 done
