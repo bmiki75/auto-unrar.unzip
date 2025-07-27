@@ -117,14 +117,14 @@ extract_zips() {
         fi
 
         # Set the overwrite flag based on the environment variable
-        overwrite_flag="-o-"
+        overwrite_flag="-o"
         if [ "$overwrite_files" = "true" ]; then
-            overwrite_flag="-o+"
+            overwrite_flag="-n"
         fi
         
         echo # This adds a blank line before each extraction attempt for better readability
         echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
-        output=$(unzip x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
+        output=$(unzip x $overwrite_flag -q "$rarfile"  -d "$output_dir/" 2>&1)
         result=$?
         
         if [ $result -eq 0 ]; then
@@ -159,7 +159,7 @@ extract_zips() {
             if [[ "$rarfile" =~ \.part01\.rar$ ]] || [[ "$rarfile" =~ \.part1\.rar$ ]]; then
                 base_name=$(basename "$rarfile" .rar | sed 's/.part[0-9][0-9]*//')
                 find "$base_dir" -type f -regex ".*$base_name\.part[0-9]+\.rar" -exec rm {} +
-            elif [[ "$rarfile" =~ \.rar$ ]]; then
+            elif [[ "$rarfile" =~ \.zip$ ]]; then
                 # Handle deletion for traditional multi-part archives
                 base_name="${rarfile%.rar}"
                 find "$base_dir" -type f -regex ".*$base_name\.[rR][0-9][0-9]" -exec rm {} +
@@ -184,14 +184,14 @@ extract_7zips() {
         fi
 
         # Set the overwrite flag based on the environment variable
-        overwrite_flag="-o-"
+        overwrite_flag="-aos"
         if [ "$overwrite_files" = "true" ]; then
-            overwrite_flag="-o+"
+            overwrite_flag="-aoa"
         fi
         
         echo # This adds a blank line before each extraction attempt for better readability
         echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
-        output=$(7z x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
+        output=$(7z x $overwrite_flag "$rarfile" -o"$output_dir/" 2>&1)
         result=$?
         
         if [ $result -eq 0 ]; then
@@ -223,10 +223,10 @@ extract_7zips() {
 
         if [ "$delete_rar_after_extraction" = "true" ] && [ -f "$marker_file" ]; then
             rm "$rarfile" # Delete the processed archive file
-            if [[ "$rarfile" =~ \.part01\.rar$ ]] || [[ "$rarfile" =~ \.part1\.rar$ ]]; then
+            if [[ "$rarfile" =~ \.7z\.001$ ]] || [[ "$rarfile" =~ \.7z\.01$ ]]; then
                 base_name=$(basename "$rarfile" .rar | sed 's/.part[0-9][0-9]*//')
                 find "$base_dir" -type f -regex ".*$base_name\.part[0-9]+\.rar" -exec rm {} +
-            elif [[ "$rarfile" =~ \.rar$ ]]; then
+            elif [[ "$rarfile" =~ \.7z$ ]]; then
                 # Handle deletion for traditional multi-part archives
                 base_name="${rarfile%.rar}"
                 find "$base_dir" -type f -regex ".*$base_name\.[rR][0-9][0-9]" -exec rm {} +
