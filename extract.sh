@@ -15,12 +15,12 @@ if ! command -v unrar &> /dev/null; then
 fi
 
 if ! command -v 7z &> /dev/null; then
-    echo "Error: 'unrar' is not installed. Please install '7z' to use this script."
+    echo "Error: '7zip' is not installed. Please install '7zip' to use this script."
     exit 1
 fi
 
 if ! command -v unzip &> /dev/null; then
-    echo "Error: 'unrar' is not installed. Please install 'unzip' to use this script."
+    echo "Error: 'unzip' is not installed. Please install 'unzip' to use this script."
     exit 1
 fi
 
@@ -236,13 +236,13 @@ extract_7zips() {
 }
 # Display ASCII art and welcome message
 cat << "EOF"
-   _____          __                    ____ ___     __________    _____ __________ 
-  /  _  \  __ ___/  |_  ____           |    |   \____\______   \  /  _  \\______   \
- /  /_\  \|  |  \   __\/  _ \   ______ |    |   /    \|       _/ /  /_\  \|       _/
-/    |    \  |  /|  | (  <_> ) /_____/ |    |  /   |  \    |   \/    |    \    |   \
-\____|__  /____/ |__|  \____/          |______/|___|  /____|_  /\____|__  /____|_  /
-        \/                                          \/       \/         \/       \/ 
-Auto-UnRAR by nicxx2
+   _____          __                   ___________         __                        __   
+  /  _  \  __ ___/  |_  ____           \_   _____/__  ____/  |_____________    _____/  |_ 
+ /  /_\  \|  |  \   __\/  _ \   ______  |    __)_\  \/  /\   __\_  __ \__  \ _/ ___\   __\
+/    |    \  |  /|  | (  <_> ) /_____/  |        \>    <  |  |  |  | \// __ \\  \___|  |  
+\____|__  /____/ |__|  \____/          /_______  /__/\_ \ |__|  |__|  (____  /\___  >__|  
+        \/                                     \/      \/                  \/     \/  
+Auto-Extract by bmiki75 (thanks to nicxx2)
 Thank you for using my tool.
 EOF
 
