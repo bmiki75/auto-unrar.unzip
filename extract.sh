@@ -91,8 +91,139 @@ extract_rars() {
     done
 }
 
+# Function to extract RAR files, considering overwrite flag and handling errors
+extract_zips() {
+    find "$source_directory" -type f \( \( -name "*.zip" -and -not -name "*.part*.rar" \) -or -name "*.part01.rar" -or -name "*.part1.rar" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
+        base_dir=$(dirname "$rarfile")
+        output_dir="${extract_to_directory:-$base_dir}"
 
+        # Construct unique marker files for each archive file
+        marker_file="$base_dir/$(basename "$rarfile").extracted.marker"
+        errormarker_file="$base_dir/$(basename "$rarfile").extracted.error"
+        errorskipmarker_file="$base_dir/$(basename "$rarfile").extracted.errorskip"
 
+        if [ "$do_not_use_markers" = "false" ] && { [ -f "$marker_file" ] || [ -f "$errorskipmarker_file" ]; }; then
+            continue # Skip if markers indicate extraction or skipping is warranted
+        fi
+
+        # Set the overwrite flag based on the environment variable
+        overwrite_flag="-o-"
+        if [ "$overwrite_files" = "true" ]; then
+            overwrite_flag="-o+"
+        fi
+        
+        echo # This adds a blank line before each extraction attempt for better readability
+        echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
+        output=$(unzip x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
+        result=$?
+        
+        if [ $result -eq 0 ]; then
+            echo "Extraction successful: $rarfile"
+            touch "$marker_file"
+        else
+            # Check output for indication of skipped files due to -o- flag
+            if echo "$output" | grep -iE 'already exists|All OK|no files to extract'; then
+                echo "Completed with file skips (existing files not overwritten): $rarfile"
+                touch "$marker_file" # Still mark as successfully extracted
+            else
+                # Increment error count in the errormarker file
+                if [ -f "$errormarker_file" ]; then
+                    error_count=$(<"$errormarker_file")
+                    error_count=$((error_count + 1))
+                    echo "$error_count" > "$errormarker_file"
+                else
+                    echo "1" > "$errormarker_file"
+                fi
+
+                # Create error skip marker if error count exceeds 5
+                if [ "$(cat "$errormarker_file")" -ge 5 ]; then
+                    touch "$errorskipmarker_file"
+                fi
+
+                echo "Error extracting $rarfile" 
+            fi
+        fi
+
+        if [ "$delete_rar_after_extraction" = "true" ] && [ -f "$marker_file" ]; then
+            rm "$rarfile" # Delete the processed archive file
+            if [[ "$rarfile" =~ \.part01\.rar$ ]] || [[ "$rarfile" =~ \.part1\.rar$ ]]; then
+                base_name=$(basename "$rarfile" .rar | sed 's/.part[0-9][0-9]*//')
+                find "$base_dir" -type f -regex ".*$base_name\.part[0-9]+\.rar" -exec rm {} +
+            elif [[ "$rarfile" =~ \.rar$ ]]; then
+                # Handle deletion for traditional multi-part archives
+                base_name="${rarfile%.rar}"
+                find "$base_dir" -type f -regex ".*$base_name\.[rR][0-9][0-9]" -exec rm {} +
+            fi
+        fi
+    done
+}
+
+# Function to extract RAR files, considering overwrite flag and handling errors
+extract_7zips() {
+    find "$source_directory" -type f \( \( -name "*.7z" -and -not -name "*.7z.00*" \) -or -name "*.7z.001" -or -name "*.7z.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
+        base_dir=$(dirname "$rarfile")
+        output_dir="${extract_to_directory:-$base_dir}"
+
+        # Construct unique marker files for each archive file
+        marker_file="$base_dir/$(basename "$rarfile").extracted.marker"
+        errormarker_file="$base_dir/$(basename "$rarfile").extracted.error"
+        errorskipmarker_file="$base_dir/$(basename "$rarfile").extracted.errorskip"
+
+        if [ "$do_not_use_markers" = "false" ] && { [ -f "$marker_file" ] || [ -f "$errorskipmarker_file" ]; }; then
+            continue # Skip if markers indicate extraction or skipping is warranted
+        fi
+
+        # Set the overwrite flag based on the environment variable
+        overwrite_flag="-o-"
+        if [ "$overwrite_files" = "true" ]; then
+            overwrite_flag="-o+"
+        fi
+        
+        echo # This adds a blank line before each extraction attempt for better readability
+        echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
+        output=$(unrar x $overwrite_flag "$rarfile" "$output_dir/" 2>&1)
+        result=$?
+        
+        if [ $result -eq 0 ]; then
+            echo "Extraction successful: $rarfile"
+            touch "$marker_file"
+        else
+            # Check output for indication of skipped files due to -o- flag
+            if echo "$output" | grep -iE 'already exists|All OK|no files to extract'; then
+                echo "Completed with file skips (existing files not overwritten): $rarfile"
+                touch "$marker_file" # Still mark as successfully extracted
+            else
+                # Increment error count in the errormarker file
+                if [ -f "$errormarker_file" ]; then
+                    error_count=$(<"$errormarker_file")
+                    error_count=$((error_count + 1))
+                    echo "$error_count" > "$errormarker_file"
+                else
+                    echo "1" > "$errormarker_file"
+                fi
+
+                # Create error skip marker if error count exceeds 5
+                if [ "$(cat "$errormarker_file")" -ge 5 ]; then
+                    touch "$errorskipmarker_file"
+                fi
+
+                echo "Error extracting $rarfile" 
+            fi
+        fi
+
+        if [ "$delete_rar_after_extraction" = "true" ] && [ -f "$marker_file" ]; then
+            rm "$rarfile" # Delete the processed archive file
+            if [[ "$rarfile" =~ \.part01\.rar$ ]] || [[ "$rarfile" =~ \.part1\.rar$ ]]; then
+                base_name=$(basename "$rarfile" .rar | sed 's/.part[0-9][0-9]*//')
+                find "$base_dir" -type f -regex ".*$base_name\.part[0-9]+\.rar" -exec rm {} +
+            elif [[ "$rarfile" =~ \.rar$ ]]; then
+                # Handle deletion for traditional multi-part archives
+                base_name="${rarfile%.rar}"
+                find "$base_dir" -type f -regex ".*$base_name\.[rR][0-9][0-9]" -exec rm {} +
+            fi
+        fi
+    done
+}
 # Display ASCII art and welcome message
 cat << "EOF"
    _____          __                    ____ ___     __________    _____ __________ 
