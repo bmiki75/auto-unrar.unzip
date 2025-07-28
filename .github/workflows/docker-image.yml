@@ -15,5 +15,5 @@ jobs:
       - name: push image to docker hub
         run: |
           docker login -u=bmiki75 -p=${{ secrets.DOCKER_HUB_TOKEN }}
-          docker push bmiki75/auto-extract:latest
+          docker push bmiki75/auto-extract
 
