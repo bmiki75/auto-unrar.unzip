@@ -107,7 +107,7 @@ extract_rars() {
 extract_zips() {
     echo
     echo "Zip processing"
-    find "$source_directory" -type f \( \( -name "*.zip" \)\) -print0 | while IFS= read -r -d $'\0' rarfile; do
+    find "$source_directory" -type f \( \( -name "*.zip" \)  \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
 
