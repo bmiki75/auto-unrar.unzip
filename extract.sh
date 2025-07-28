@@ -117,14 +117,14 @@ extract_zips() {
         fi
 
         # Set the overwrite flag based on the environment variable
-        overwrite_flag="-o"
+        overwrite_flag=""
         if [ "$overwrite_files" = "true" ]; then
-            overwrite_flag="-n"
+            overwrite_flag="-o"
         fi
         
         echo # This adds a blank line before each extraction attempt for better readability
         echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
-        output=$(unzip x $overwrite_flag -q -d "$output_dir/" "$rarfile"   2>&1)
+        output=$(unzip $overwrite_flag -d "$output_dir/" "$rarfile"   2>&1)
         result=$?
         
         if [ $result -eq 0 ]; then
