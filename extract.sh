@@ -124,7 +124,7 @@ extract_zips() {
         
         echo # This adds a blank line before each extraction attempt for better readability
         echo -e "\n\nAttempting to extract: $rarfile to $output_dir"
-        output=$(unzip x $overwrite_flag -q "$rarfile"  -d "$output_dir/" 2>&1)
+        output=$(unzip x $overwrite_flag -q -d "$output_dir/" "$rarfile"   2>&1)
         result=$?
         
         if [ $result -eq 0 ]; then
