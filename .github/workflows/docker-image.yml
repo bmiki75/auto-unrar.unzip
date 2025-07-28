@@ -11,9 +11,9 @@ jobs:
         uses: actions/checkout@v4
       - name: build image
         run: |
-          docker build ./ -t bmiki75/auto-unrar.unzip:latest
+          docker build ./ -t bmiki75/auto-extract:latest
       - name: push image to docker hub
         run: |
           docker login -u=bmiki75 -p=${{ secrets.DOCKER_HUB_TOKEN }}
-          docker push bmiki75/auto-extract
+          docker push bmiki75/auto-extract:latest
 
