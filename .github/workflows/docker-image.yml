@@ -14,6 +14,6 @@ jobs:
           docker build ./ -t bmiki75/auto-unrar.unzip:latest
       - name: push image to docker hub
         run: |
-          docker login -u bmiki75 -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker login -u=bmiki75 -p=${{ secrets.DOCKER_HUB_TOKEN }}
           docker push bmiki75/auto-extract:latest
 
