@@ -109,7 +109,7 @@ extract_zips() {
     echo
    
     echo "Zip processing"
-    find "$source_directory" -type f \( \( -name "*.zip" \) -or -name "*.zip.001" -or -name "*.zip.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
+    find "$source_directory" -type f \( \( -name "*.zip" \) \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
 
@@ -179,7 +179,7 @@ extract_7zips() {
     echo
    
     echo "7Zip processing"
-    find "$source_directory" -type f \( \( -name "*.7z" -and -not -name "*.7z.00*" \) -or -name "*.7z.001" -or -name "*.7z.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
+    find "$source_directory" -type f \( \( -name "*.7z" -and -not -name "*.7z.00*" \) -or -name "*.7z.001" -or -name "*.7z.01" -or -name "*.zip.001" -or -name "*.zip.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
 
