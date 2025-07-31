@@ -37,8 +37,8 @@ fi
 # Function to extract RAR files, considering overwrite flag and handling errors
 extract_rars() {
     echo
-    Ora=$(date +"%d/%m/%Y %T")
-    echo "$Ora "Rar processing"
+   
+    echo "Rar processing"
     find "$source_directory" -type f \( \( -name "*.rar" -and -not -name "*.part*.rar" \) -or -name "*.part01.rar" -or -name "*.part1.rar" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
@@ -64,8 +64,7 @@ extract_rars() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            Ora=$(date +"%d/%m/%Y %T")
-            echo "$Ora Extraction successful: $rarfile"
+            echo "Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
@@ -108,8 +107,8 @@ extract_rars() {
 # Function to extract RAR files, considering overwrite flag and handling errors
 extract_zips() {
     echo
-    Ora=$(date +"%d/%m/%Y %T")
-    echo "$Ora "Zip processing"
+   
+    echo "Zip processing"
     find "$source_directory" -type f \( \( -name "*.zip" \) -or -name "*.zip.001" -or -name "*.zip.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
@@ -135,8 +134,7 @@ extract_zips() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            Ora=$(date +"%d/%m/%Y %T")
-            echo "$Ora Extraction successful: $rarfile"
+            echo "Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
@@ -179,8 +177,8 @@ extract_zips() {
 # Function to extract RAR files, considering overwrite flag and handling errors
 extract_7zips() {
     echo
-    Ora=$(date +"%d/%m/%Y %T")
-    echo "$Ora 7Zip processing"
+   
+    echo "7Zip processing"
     find "$source_directory" -type f \( \( -name "*.7z" -and -not -name "*.7z.00*" \) -or -name "*.7z.001" -or -name "*.7z.01" \) -print0 | while IFS= read -r -d $'\0' rarfile; do
         base_dir=$(dirname "$rarfile")
         output_dir="${extract_to_directory:-$base_dir}"
@@ -206,8 +204,8 @@ extract_7zips() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            Ora=$(date +"%d/%m/%Y %T")
-            echo "$Ora Extraction successful: $rarfile"
+           
+            echo "Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
