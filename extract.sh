@@ -63,7 +63,8 @@ extract_rars() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            echo "Extraction successful: $rarfile"
+            Ora=date +"%d/%m/%Y %T"
+            echo "$Ora Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
@@ -132,7 +133,8 @@ extract_zips() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            echo "Extraction successful: $rarfile"
+            Ora=date +"%d/%m/%Y %T"
+            echo "$Ora Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
@@ -201,7 +203,8 @@ extract_7zips() {
         result=$?
         
         if [ $result -eq 0 ]; then
-            echo "Extraction successful: $rarfile"
+            Ora=date +"%d/%m/%Y %T"
+            echo "$Ora Extraction successful: $rarfile"
             touch "$marker_file"
         else
             # Check output for indication of skipped files due to -o- flag
